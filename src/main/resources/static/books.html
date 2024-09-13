@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book CRUD Operations</title>
+    <!-- Include Bootstrap for Styling -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>Book Management</h2>
+
+    <!-- Form to Add or Update a Book -->
+    <form id="bookForm">
+        <div class="form-group">
+            <label for="bookId">ID:</label>
+            <input type="text" class="form-control" id="bookId" placeholder="Enter book ID" required>
+        </div>
+        <div class="form-group">
+            <label for="title">Title:</label>
+            <input type="text" class="form-control" id="title" placeholder="Enter book title" required>
+        </div>
+        <div class="form-group">
+            <label for="author">Author:</label>
+            <input type="text" class="form-control" id="author" placeholder="Enter author name" required>
+        </div>
+        <div class="form-group">
+            <label for="description">Description:</label>
+            <textarea class="form-control" id="description" placeholder="Enter book description"></textarea>
+        </div>
+        <div class="form-group">
+            <label for="imageUrl">Image URL:</label>
+            <input type="text" class="form-control" id="imageUrl" placeholder="Enter image URL">
+        </div>
+        <button type="submit" class="btn btn-primary">Add/Update Book</button>
+    </form>
+
+    <h3 class="mt-5">Books List</h3>
+    <!-- Table to Display Books -->
+    <table class="table table-bordered mt-3">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Description</th>
+            <th>Image URL</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody id="booksTableBody">
+        <!-- Dynamic book data will be inserted here -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Include jQuery and Bootstrap JavaScript -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+// Fetch All Books from API
+function fetchBooks() {
+    $.ajax({
+        url: 'http://localhost:8080/api/books',
+        method: 'GET',
+        success: function (books) {
+            var booksTableBody = $('#booksTableBody');
+            booksTableBody.empty(); // Clear existing data
+            books.forEach(function (book) {
+                booksTableBody.append(`
+                    <tr>
+                        <td>${book.id}</td>
+                        <td>${book.title}</td>
+                        <td>${book.author}</td>
+                        <td>${book.description}</td>
+                        <td>${book.imageUrl}</td>
+                        <td>
+                            <button class="btn btn-warning btn-sm" onclick="editBook('${book.id}')">Edit</button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteBook('${book.id}')">Delete</button>
+                        </td>
+                    </tr>
+                `);
+            });
+        },
+        error: function (err) {
+            console.error('Error fetching books:', err);
+        }
+    });
+}
+
+// Add or Update Book
+$('#bookForm').on('submit', function (e) {
+    e.preventDefault();
+
+    var bookData = {
+        id: $('#bookId').val(),
+        title: $('#title').val(),
+        author: $('#author').val(),
+        description: $('#description').val(),
+        imageUrl: $('#imageUrl').val()
+    };
+
+    $.ajax({
+        url: 'http://localhost:8080/api/books',
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify(bookData),
+        success: function () {
+            fetchBooks(); // Refresh the book list
+            $('#bookForm')[0].reset(); // Clear the form
+        },
+        error: function (err) {
+            console.error('Error saving book:', err);
+        }
+    });
+});
+
+// Edit Book
+function editBook(bookId) {
+    $.ajax({
+        url: `http://localhost:8080/api/books/${bookId}`,
+        method: 'GET',
+        success: function (book) {
+            $('#bookId').val(book.id);
+            $('#title').val(book.title);
+            $('#author').val(book.author);
+            $('#description').val(book.description);
+            $('#imageUrl').val(book.imageUrl);
+        },
+        error: function (err) {
+            console.error('Error fetching book details:', err);
+        }
+    });
+}
+
+// Delete Book
+function deleteBook(bookId) {
+    $.ajax({
+        url: `http://localhost:8080/api/books/${bookId}`,
+        method: 'DELETE',
+        success: function () {
+            fetchBooks(); // Refresh the book list
+        },
+        error: function (err) {
+            console.error('Error deleting book:', err);
+        }
+    });
+}
+
+// Initial Fetch
+fetchBooks();
+</script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <h1 class="text-center">Display Users Form Data - Dashboard</h1>
+
+    <div class="container mt-4">
+        <table class="table table-bordered table-striped"> 
+            <thead class="thead-dark">
+          
+                
+                
+                  <tr>
+                  
+            <th>Name</th>
+            <th>Phone</th>
+            <th>Mail</th>
+            <th>Message</th>
+            
+        </tr>
+            </thead>
+            <tbody>
+                 <tr th:each="std : ${s}">
+            <td th:text="${std.name}"></td>
+            
+            <td th:text="${std.phone}"></td>
+            <td th:text="${std.mail}"></td>
+            <td th:text="${std.msg}"></td>
+        </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+
+
+
